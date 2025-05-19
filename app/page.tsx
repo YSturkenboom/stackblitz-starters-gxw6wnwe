@@ -139,22 +139,23 @@ export default function Home() {
     })
   );
 
-  // Fetch todos on component mount
+  // TODO: Implement proper loading states and error boundaries
+  // TODO: Implement filtering logic, in the endpoint
   useEffect(() => {
     const fetchTodos = async () => {
-      try {
-        const response = await fetch('/api/todos');
-        const data = await response.json();
-        if (data.success) {
-          setTodos(data.data);
-        }
-      } finally {
-        setIsLoading(false);
+      const url = selectedStatuses.length > 0
+        ? `/api/todos?statuses=${selectedStatuses.join(',')}`
+        : '/api/todos';
+      const response = await fetch(url);
+      const data = await response.json();
+      if (data.success) {
+        setTodos(data.data);
       }
     };
     fetchTodos();
-  }, []);
+  }, [selectedStatuses]);
 
+  // TODO: Implement proper state updates
   const addTodo = async () => {
     if (!newTodo.trim()) return;
     
@@ -172,8 +173,7 @@ export default function Home() {
       
       const data = await response.json();
       if (data.success) {
-        setTodos([...todos, data.data]);
-        setNewTodo('');
+        // TODO: Implement proper state updates here
         toast.success('Todo added successfully');
       } else {
         toast.error('Failed to add todo');
@@ -183,29 +183,11 @@ export default function Home() {
     }
   };
 
+  // TODO: Implement proper state management for todo status updates
   const updateStatus = async (_id: string, status: TodoStatus) => {
     try {
-      const response = await fetch('/api/todos', {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ 
-          id: _id,
-          status,
-          completed: status === 'finished'
-        }),
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setTodos(todos.map(todo => 
-          todo._id === _id ? { ...todo, status, completed: status === 'finished' } : todo
-        ));
-        toast.success('Status updated');
-      } else {
-        toast.error('Failed to update status');
-      }
+      // TODO: Call the update endpoint
+      // TODO: Implement proper state updates here
     } catch (error) {
       toast.error('Failed to update status');
     }
@@ -213,17 +195,8 @@ export default function Home() {
 
   const deleteTodo = async (_id: string) => {
     try {
-      const response = await fetch(`/api/todos/${_id}`, {
-        method: 'DELETE',
-      });
-
-      const data = await response.json();
-      if (data.success) {
-        setTodos(todos.filter(todo => todo._id !== _id));
-        toast.success('Todo deleted');
-      } else {
-        toast.error('Failed to delete todo');
-      }
+      // TODO: Call the delete endpoint
+      // TODO: Implement proper state updates
     } catch (error) {
       toast.error('Failed to delete todo');
     }
@@ -239,7 +212,6 @@ export default function Home() {
       const newTodos = arrayMove(todos, oldIndex, newIndex);
       setTodos(newTodos);
 
-      // Update orders in the database
       const orders = newTodos.reduce((acc, todo, index) => ({
         ...acc,
         [todo._id]: index + 1
@@ -264,6 +236,7 @@ export default function Home() {
     }
   };
 
+  // TODO: Implement backend filtering logic
   const filteredTodos = selectedStatuses.length > 0
     ? todos.filter(todo => selectedStatuses.includes(todo.status))
     : todos;

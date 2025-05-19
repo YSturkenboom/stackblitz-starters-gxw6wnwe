@@ -9,21 +9,11 @@ export async function DELETE(
 ) {
   try {
     const id = params.id;
-    if (!id) {
-      return NextResponse.json(
-        { success: false, message: 'Missing id' },
-        { status: 400 }
-      );
-    }
+    // TODO: Implement proper error handling and validation
+    // TODO: Delete the todo item from the database, and return the deleted todo item
 
-    const result = await Todos.deleteOne({ _id: id });
-    if (result.deletedCount === 0) {
-      return NextResponse.json(
-        { success: false, message: 'Todo not found' },
-        { status: 404 }
-      );
-    }
-
+    // Replace the placeholder with the actual result
+    const result = { data: 'placeholder' };
     return NextResponse.json(
       { success: true, data: result.data },
       { status: 200 }
@@ -34,4 +24,25 @@ export async function DELETE(
       { status: 400 }
     );
   }
-} 
+}
+
+export async function PUT(req: NextRequest) {
+  try {
+    const body = await req.json();
+    
+    // TODO: Implement proper error handling and validation
+    // TODO: Update the todo item in the database, and return the updated todo item
+
+    // Replace the placeholder with the actual result
+    const result = { data: 'placeholder' };
+    return NextResponse.json(
+      { success: true, data: result.data },
+      { status: 200 }
+    );
+  } catch (err) {
+    return NextResponse.json(
+      { success: false, message: 'Invalid request' },
+      { status: 400 }
+    );
+  }
+}
