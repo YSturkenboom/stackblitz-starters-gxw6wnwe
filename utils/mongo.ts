@@ -27,7 +27,6 @@ export const getCollection = (name: string) => {
 
   return {
     find: (filter: Partial<Document> = {}) => {
-      console.log('1 Find', filter);
       const results = db[name].filter((doc) => matchFilter(doc, filter));
       return {
         toArray: async () => results.sort((a, b) => (a.order || 0) - (b.order || 0))
@@ -35,12 +34,10 @@ export const getCollection = (name: string) => {
     },
 
     findOne: async (filter: Partial<Document> = {}) => {
-      console.log('2 FindOne');
       return db[name].find((doc) => matchFilter(doc, filter)) || null;
     },
 
     insertOne: async (doc: Omit<Document, '_id'>) => {
-      console.log('3 InsertOne', doc);
       const maxOrder = Math.max(0, ...db[name].map(d => d.order || 0));
       const newDoc = { ...doc, _id: generateId(), order: maxOrder + 1 };
       db[name].push(newDoc);
@@ -49,7 +46,6 @@ export const getCollection = (name: string) => {
     },
 
     updateOne: async (filter: Partial<Document>, update: { $set: Partial<Document> }) => {
-      console.log('4 UpdateOne', filter, update);
       const doc = db[name].find((doc) => matchFilter(doc, filter));
       if (doc) {
         applyUpdate(doc, update);
@@ -65,7 +61,6 @@ export const getCollection = (name: string) => {
     },
 
     updateMany: async (filter: Partial<Document>, update: { $set: Partial<Document> }) => {
-      console.log('4 UpdateMany', filter, update);
       const docs = db[name].filter((doc) => matchFilter(doc, filter));
       docs.forEach(doc => applyUpdate(doc, update));
       saveDatabase(db);
@@ -77,7 +72,6 @@ export const getCollection = (name: string) => {
     },
 
     deleteOne: async (filter: Partial<Document>) => {
-      console.log('5 DeleteOne', filter);
       const index = db[name].findIndex((doc) => matchFilter(doc, filter));
       if (index !== -1) {
         const deleted = db[name][index];
